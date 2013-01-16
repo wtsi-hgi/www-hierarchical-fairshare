@@ -23,6 +23,9 @@ use File::Spec::Functions qw(rel2abs);
 use File::Basename;
 
 print <<"EOF";
+Content-Type: text/html;
+
+
 <html>
   <head>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -35,7 +38,7 @@ function drawChart() {
 EOF
 
 my $path = dirname(rel2abs($0));
-my $data = `$path/../lsf_tools/lsf_fairshare`;
+my $data = `LSF_BINDIR="/usr/local/lsf/7.0/linux2.6-glibc2.3-x86_64/bin" LSF_ENVDIR="/etc" LSF_LIBDIR="/usr/local/lsf/7.0/linux2.6-glibc2.3-x86_64/lib" LSF_SERVERDIR="/usr/local/lsf/7.0/linux2.6-glibc2.3-x86_64/etc" $path/../lsf_tools/lsf_fairshare`;
 $data =~ s/(?>\x0D\x0A?|[\x0A-\x0C\x85\x{2028}\x{2029}])//g;
 print $data;
 
