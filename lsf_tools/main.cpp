@@ -5,6 +5,7 @@
 #include <map>
 #include <cstring>
 #include <string>
+#include <math.h>
 
 class ShareAcct
 {
@@ -14,9 +15,9 @@ class ShareAcct
     }
     void print(bool is_parent) {
       if (is_parent) {
-        printf( "['%s','%s',%f,%f]\n", group.c_str(), parent.c_str(), proportion, priority);
+        printf( "['%s','%s',%f,%f]\n", group.c_str(), parent.c_str(), proportion, log(priority));
       } else {
-        printf( "['%s@%s','%s',%f,%f]\n", group.c_str(), parent.c_str(), parent.c_str(), proportion, priority);
+        printf( "['%s@%s','%s',%f,%f]\n", group.c_str(), parent.c_str(), parent.c_str(), proportion, log(priority));
       }
     }
   private:
