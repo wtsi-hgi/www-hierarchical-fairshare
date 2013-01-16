@@ -46,9 +46,9 @@ print <<"EOF";
         // Create and draw the visualization.
 	    var tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
         tree.draw(data, {
-          minColor: '#030',
+          minColor: '#003',
           midColor: '#090',
-          maxColor: '#0f0',
+          maxColor: '#f00',
           noColor: '#ddd',
 	  headerColor: '#aaa',
           minHighlightColor: '#0ff',
