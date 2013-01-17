@@ -47,29 +47,32 @@ print <<"EOF";
 	);
 
         // Create and draw the visualization.
-	    var tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
+      var tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
         tree.draw(data, {
-          minColor: '#003',
-          midColor: '#090',
+          minColor: '#fff',
+          midColor: '#fdd',
           maxColor: '#f00',
           noColor: '#ddd',
-	  headerColor: '#aaa',
+    headerColor: '#aaa',
           minHighlightColor: '#0ff',
           midHighlightColor: '#0ff',
           maxHighlightColor: '#0ff',
           noHighlightColor: '#0ff',
-	  headerHighlightColor: '#0cc',
+    headerHighlightColor: '#0cc',
           headerHeight: 25,
           fontColor: 'black',
-          showScale: false,
-	  showTooltips: true,
+          showScale: true,
+    showTooltips: true,
           maxDepth: 2,
-	  maxPostDepth: 2});
+    maxPostDepth: 2});
 }
     </script>
   </head>
 
   <body>
+    <div>
+    In the following chart, priority is indicated by colour, from white (low priority) to red (high priority).
+    </div>
     <div id="chart_div" style="width: 1024px; height:768px;"></div>
   </body>
 </html>
