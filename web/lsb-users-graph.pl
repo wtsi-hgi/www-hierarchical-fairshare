@@ -49,9 +49,9 @@ print <<"EOF";
         // Create and draw the visualization.
       var tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
         tree.draw(data, {
-          minColor: '#fff',
+          minColor: '#f00',
           midColor: '#fdd',
-          maxColor: '#f00',
+          maxColor: '#fff',
           noColor: '#ddd',
     headerColor: '#aaa',
           minHighlightColor: '#0ff',
@@ -71,7 +71,7 @@ print <<"EOF";
 
   <body>
     <div>
-    In the following chart, priority is indicated by colour, from white (low priority) to red (high priority).
+    In the following chart, priority is indicated by colour, from red (low priority) to white (high priority).
     </div>
     <div id="chart_div" style="width: 1024px; height:768px;"></div>
   </body>
