@@ -71,6 +71,7 @@ class ShareAcct
     const float getProportion() { return proportion; }
 
     void setProportion(const float p) { proportion = p; }
+    void setPriority(const float p) { priority = p; }
 };
 
 int main(int argc, char** argv)
@@ -103,7 +104,7 @@ int main(int argc, char** argv)
       struct shareAcctInfoEnt *curr_share = &curr_info->shareAccts[j];
       ShareAcct* acct = new ShareAcct( curr_share );
       std::string parent = std::string(acct->getParent());
-      // If the parent is already in the map, sum the priorities. Otherwise, add it in with the priority of the first child.
+      // If the parent is already in the map, sum the shares. Otherwise, add it in with the shares of the first child.
       if (parent_map.count(parent) > 0) {
         parent_map[parent] += acct->getShares();
       } else {
@@ -117,19 +118,24 @@ int main(int argc, char** argv)
     // then multiply that by the value we calculated for the parents. We do this recursively until
     // we hit the bottom.
     std::map<std::string, float> share_map;
+    // Try doing the same for priority.
+    std::map<std::string, float> priority_map;
     for (auto it = accounts.begin(); it != accounts.end(); it++) {
       ShareAcct* a = *it;
       if (parent_map.count(a->getParent()) > 0) {
         if (share_map.count(a->getParent()) > 0) {
           share_map[a->getGroup()] = ((a->getShares() / parent_map[a->getParent()]) * share_map[a->getParent()]);
+          priority_map[a->getGroup()] = (a->getPriority() * priority_map[a->getParent()]);
         } else {
           share_map[a->getGroup()] = (a->getShares() / parent_map[a->getParent()]);
+          priority_map[a->getGroup()] = a->getPriority();
         }
       } else {
         share_map[a->getGroup()] = 1;
       }
 
       a->setProportion(share_map[a->getGroup()]);
+      a->setPriority(priority_map[a->getGroup()]);
 
     }
 
