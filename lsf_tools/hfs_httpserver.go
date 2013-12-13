@@ -196,14 +196,16 @@ func writeFairShare(jsonout io.Writer, queue *string) error {
 	
 	timestamp := time.Now().Format(time.RFC3339)
 	
-	fairshareQueues := C.GoString(qi.info_entry.fairshareQueues)
-	noqueues, matcherr := regexp.MatchString("^[[:space:]]*$", fairshareQueues)
+	fairshareQueueStr := C.GoString(qi.info_entry.fairshareQueues)
+	noqueues, matcherr := regexp.MatchString("^[[:space:]]*$", fairshareQueueStr)
 	if matcherr != nil {
 		return matcherr
 	}
 	if noqueues {
-		fairshareQueues = fmt.Sprintf("%s", *queue)
+		fairshareQueueStr = fmt.Sprintf("%s", *queue)
 	}
+
+	fairshareQueues := strings.Split(fairshareQueueStr, " ")
 
 //	shareAccountCount := qi.info_entry.numOfSAccts
 
