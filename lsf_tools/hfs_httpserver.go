@@ -67,6 +67,7 @@ import "io"
 import "net/http"
 import "regexp"
 import "log"
+import "time"
 
 //import "runtime/pprof"
 
@@ -192,7 +193,9 @@ func writeFairShare(jsonout io.Writer, queue *string) error {
 	if err != nil {
 		return err
 	}
-
+	
+	timestamp := time.Now().Format(time.RFC3339)
+	
 	fairshareQueues := C.GoString(qi.info_entry.fairshareQueues)
 	noqueues, matcherr := regexp.MatchString("^[[:space:]]*$", fairshareQueues)
 	if matcherr != nil {
@@ -223,6 +226,7 @@ func writeFairShare(jsonout io.Writer, queue *string) error {
 	var output = make(map[string]interface{})
 	output["queues"] = fairshareQueues
 	output["shares"] = shareAccounts
+	output["timestamp"] = timestamp
 
 	enc := json.NewEncoder(jsonout)
 	err = enc.Encode(output)
