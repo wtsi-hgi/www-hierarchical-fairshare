@@ -246,6 +246,7 @@ func FairShareServer(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(os.Stderr, "Getting fairshare for queue %s\n", queue)
 
 	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	if err := writeFairShare(w, &queue); err != nil {
 		noqueue, matcherr := regexp.MatchString("[Nn]o such queue", err.Error())
 		if matcherr == nil {
@@ -267,12 +268,17 @@ func FairShareServer(w http.ResponseWriter, req *http.Request) {
 
 
 func main() {
-	var address = flag.String("address", ":8080", "Address to listen on for HTTP requests")
+	var address = flag.String("address", ":9001", "Address to listen on for HTTP requests")
+//	var cert = flag.String("cert", "cert.pem", "TLS certificate file (PEM encoded)")
+//	var key = flag.String("key", "key.pem", "TLS key file (PEM encoded)")
 	flag.Parse()
 	
 	http.HandleFunc("/", FairShareServer)
+	fmt.Printf("hfs_httpserver about to start listening at %s\n", *address)
+//	err := http.ListenAndServeTLS(*address, *cert, *key,  nil)
 	err := http.ListenAndServe(*address, nil)
 	if err != nil {
+//		log.Fatal("ListenAndServeTLS: ", err)
 		log.Fatal("ListenAndServe: ", err)
 	}
 }
