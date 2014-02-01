@@ -92,6 +92,7 @@ type ShareAccountEntry struct {
 	OverallNormalisedShares float64
 	OverallPriority float64
 	OverallPriorityLog float64
+	PriorityLog float64
 }
 
 func LsbQueueInfo(queueName *string) (qi *C.hfsgo_queue_info_t, err error) {
@@ -185,6 +186,7 @@ func addNormalisedAndOverall(parent *ShareAccountEntry, child *ShareAccountEntry
 	child.OverallNormalisedShares = float64(child.NormalisedShares) * parent.OverallNormalisedShares
 	child.OverallPriority = float64(child.Priority) * parent.OverallPriority
 	child.OverallPriorityLog = math.Log10(float64(child.Priority)) + parent.OverallPriorityLog
+	child.PriorityLog = math.Log10(float64(child.Priority))
 }
 
 func writeFairShare(jsonout io.Writer, queue *string) error {
@@ -220,6 +222,7 @@ func writeFairShare(jsonout io.Writer, queue *string) error {
 	shareAccounts.OverallNormalisedShares = 1.0
 	shareAccounts.OverallPriority = 1.0
 	shareAccounts.OverallPriorityLog = math.Log10(1.0)
+	shareAccounts.PriorityLog = math.Log10(1.0)
 
 	// descend through the tree and calculate normalised shares
 	// and overall shares and priority
