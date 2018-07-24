@@ -13,11 +13,17 @@ class ShareAcct
     static void print_structure() {
       printf("['Group', 'Parent', 'Percentage', 'Priority']");
     }
-    void print(bool is_parent) {
-      if (is_parent) {
-        printf( "['%s','%s',%f,%f]\n", group.c_str(), parent.c_str(), proportion, log(priority));
+  void print(bool is_parent) {
+      float priority_out;
+      if (logp) {
+	priority_out = log(priority);
       } else {
-        printf( "['%s@%s','%s',%f,%f]\n", group.c_str(), parent.c_str(), parent.c_str(), proportion, log(priority));
+	priority_out = priority;
+      }
+      if (is_parent) {
+        printf( "['%s','%s',%f,%f]\n", group.c_str(), parent.c_str(), proportion, priority_out);
+      } else {
+        printf( "['%s@%s','%s',%f,%f]\n", group.c_str(), parent.c_str(), parent.c_str(), proportion, priority_out);
       }
     }
   private:
@@ -26,6 +32,7 @@ class ShareAcct
     int shares;
     float proportion;
     float priority;
+    bool logp;
 
     static std::pair<std::string,std::string>* digestPath( const char *input )
     {
@@ -52,7 +59,7 @@ class ShareAcct
       return new std::pair<std::string,std::string>(tokens[tokens_found], tokens[tokens_found-1]);
     }
   public:
-    ShareAcct(const struct shareAcctInfoEnt *curr_share)
+  ShareAcct(const struct shareAcctInfoEnt *curr_share, bool log_p)
     {
       std::pair<std::string, std::string>* path = digestPath(curr_share->shareAcctPath);
       group = path->first;
@@ -62,6 +69,8 @@ class ShareAcct
       shares = curr_share->shares;
       priority = curr_share->priority;
       proportion = 1.123;
+      
+      logp = log_p;
     }
 
     const char* getParent() { return parent.c_str(); }
@@ -72,6 +81,7 @@ class ShareAcct
 
     void setProportion(const float p) { proportion = p; }
     void setPriority(const float p) { priority = p; }
+    void setLogP(bool lp) { logp = lp; }
 };
 
 int main(int argc, char** argv)
@@ -91,6 +101,17 @@ int main(int argc, char** argv)
     queues = argv[1];
   }
 
+  // If log_p isn't specified, then default to true (show priorities as log(priority))
+  bool log_p;
+  if (argc < 3) {
+    log_p = true;
+  }
+  else {
+    if (strncmp(argv[1], "false", 4) || strncmp(argv[1], "0", 1)) {
+      log_p = false;
+    }
+  }
+
   // Query LSF
   int num_queues = 1;
   struct queueInfoEnt *info = lsb_queueinfo(&queues, &num_queues, NULL, NULL, 0);
@@ -102,7 +123,7 @@ int main(int argc, char** argv)
     // SKUNKWORKS SOLUTION
     for (int j = 1; j < curr_info->numOfSAccts; j++) {
       struct shareAcctInfoEnt *curr_share = &curr_info->shareAccts[j];
-      ShareAcct* acct = new ShareAcct( curr_share );
+      ShareAcct* acct = new ShareAcct( curr_share, log_p );
       std::string parent = std::string(acct->getParent());
       // If the parent is already in the map, sum the shares. Otherwise, add it in with the shares of the first child.
       if (parent_map.count(parent) > 0) {
